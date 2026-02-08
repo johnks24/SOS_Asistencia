@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Reporte</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background-color: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2, h3 { color: #333; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
+        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.9em; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .total-box { background-color: #e8f0fe; font-weight: bold; font-size: 1.2em; text-align: center; }
+        button { width: 100%; padding: 12px; margin-top: 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold; }
+        .btn-green { background-color: #25D366; color: white; } /* WhatsApp color */
+        .btn-blue { background-color: #007bff; color: white; }
+        .btn-gray { background-color: #6c757d; color: white; }
+        
+        #resumenSection { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="formSection">
+    <h2>1. FECHA Y HORA</h2>
+    <label>Fecha:</label>
+    <input type="date" id="fecha">
+    
+    <label>Hora:</label>
+    <select id="hora">
+        <option value="">Seleccionar...</option>
+        <option value="10:00">10:00</option>
+        <option value="17:00">17:00</option>
+        <option value="19:00">19:00</option>
+    </select>
+
+    <h2>2. ASISTENCIA</h2>
+    <!-- Inputs numéricos que activan la función calcularTotal() al cambiar -->
+    <label>Auditorio:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Teens:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Profes Teens:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Kids:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Profes Kids:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Maternos:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Profes Maternos:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    
+    <label style="color:red; font-size:1.2em;">TOTAL:</label>
+    <input type="number" id="totalGeneral" class="total-box" readonly>
+
+    <h2>3. SERVIDORES SEGURIDAD</h2>
+    <div style="font-size:0.8em; color:gray;">(Máx. 30 caracteres por línea)</div>
+    
+    <label>P1:</label> <input type="text" id="p1" maxlength="30">
+    <label>P2:</label> <input type="text" id="p2" maxlength="30">
+    <label>P3 Coord:</label> <input type="text" id="p3" maxlength="30">
+    <label>P4 Pta 2:</label> <input type="text" id="p4" maxlength="30">
+    <label>P5:</label> <input type="text" id="p5" maxlength="30">
+    <label>Pta 1:</label> <input type="text" id="pta1" maxlength="30">
+    <label>Lobby:</label> <input type="text" id="lobby" maxlength="30">
+    <label>Disponibles:</label> <input type="text" id="disp" maxlength="30">
+
+    <button class="btn-blue" onclick="generarResumen()">Ver Resumen</button>
+</div>
+
+<!-- Sección de Resumen (Oculta al principio) -->
+<div class="container" id="resumenSection">
+    <h2>Resumen</h2>
+    <div id="textoResumen" style="white-space: pre-line; background:#fff; padding:10px; border:1px solid #ddd;"></div>
+    
+    <button class="btn-green" onclick="enviarWhatsApp()">📲 Compartir por WhatsApp</button>
+    <button class="btn-gray" onclick="editarDatos()">✏️ Editar Datos</button>
+    <button class="btn-blue" onclick="nuevoFormulario()">🔄 Nuevo Formulario</button>
+</div>
+
+<script>
+    // 1. Función para sumar automáticamente
+    function calcularTotal() {
+        let inputs = document.querySelectorAll('.sumar');
+        let total = 0;
+        inputs.forEach(input => {
+            total += Number(input.value) || 0;
+        });
+        document.getElementById('totalGeneral').value = total;
+    }
+
+    // 2. Generar el resumen visual
+    function generarResumen() {
+        // Recoger valores
+        let fecha = document.getElementById('fecha').value;
+        let hora = document.getElementById('hora').value;
+        let total = document.getElementById('totalGeneral').value;
+        
+        // Crear texto
+        let texto = `*REPORTE DE ASISTENCIA*\nFecha: ${fecha}\nHora: ${hora}\n\n*ASISTENCIA (Total: ${total})*\n`;
+        
+        // Añadir detalles de asistencia
+        let labelsAsis = ["Auditorio", "Teens", "Profes Teens", "Kids", "Profes Kids", "Maternos", "Profes Maternos"];
+        let inputsAsis = document.querySelectorAll('.sumar');
+        inputsAsis.forEach((inp, index) => {
+            if(inp.value) texto += `- ${labelsAsis[index]}: ${inp.value}\n`;
+        });
+
+        texto += `\n*SEGURIDAD*\n`;
+        // Añadir seguridad
+        let idsSeg = ["p1", "p2", "p3", "p4", "p5", "pta1", "lobby", "disp"];
+        let labelsSeg = ["P1", "P2", "P3 Coord", "P4 Pta 2", "P5", "Pta 1", "Lobby", "Disp"];
+        
+        idsSeg.forEach((id, index) => {
+            let val = document.getElementById(id).value;
+            if(val) texto += `- ${labelsSeg[index]}: ${val}\n`;
+        });
+
+        // Mostrar en pantalla
+        document.getElementById('textoResumen').innerText = texto;
+        
+        // Cambiar pantallas
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('resumenSection').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    // 3. Enviar a WhatsApp
+    function enviarWhatsApp() {
+        let texto = document.getElementById('textoResumen').innerText;
+        // Codificar para URL
+        let url = "https://wa.me/?text=" + encodeURIComponent(texto);
+        window.open(url, '_blank');
+    }
+
+    // 4. Editar (Volver atrás sin borrar)
+    function editarDatos() {
+        document.getElementById('resumenSection').style.display = 'none';
+        document.getElementById('formSection').style.display = 'block';
+    }
+
+    // 5. Nuevo (Borrar todo)
+    function nuevoFormulario() {
+        // Limpiar inputs
+        let inputs = document.querySelectorAll('input');
+        inputs.forEach(i => i.value = "");
+        document.getElementById('hora').selectedIndex = 0;
+        
+        editarDatos(); // Volver a la pantalla principal
+    }
+    
+    // Poner fecha de hoy por defecto
+    document.getElementById('fecha').valueAsDate = new Date();
+</script>
+
+</body>
+</html>
