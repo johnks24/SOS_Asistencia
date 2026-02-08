@@ -41,8 +41,8 @@
     <label>Profes Teens:</label> <input type="number" class="sumar" oninput="calcularTotal()">
     <label>Kids:</label> <input type="number" class="sumar" oninput="calcularTotal()">
     <label>Profes Kids:</label> <input type="number" class="sumar" oninput="calcularTotal()">
-    <label>Maternos:</label> <input type="number" class="sumar" oninput="calcularTotal()">
-    <label>Profes Maternos:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Maternas:</label> <input type="number" class="sumar" oninput="calcularTotal()">
+    <label>Profes Maternas:</label> <input type="number" class="sumar" oninput="calcularTotal()">
     
     <label style="color:red; font-size:1.2em;">TOTAL:</label>
     <input type="number" id="totalGeneral" class="total-box" readonly>
@@ -91,7 +91,7 @@
         let total = document.getElementById('totalGeneral').value;
         
         // Crear texto
-        let texto = `*REPORTE DEl SERVICIO*\nFecha: ${fecha}\nHora: ${hora}\n\n*ASISTENCIA (Total: ${total})*\n`;
+        let texto = `*REPORTE DEL SERVICIO*\nFecha: ${fecha}\nHora: ${hora}\n\n*ASISTENCIA (Total: ${total})*\n`;
         
         // Añadir detalles de asistencia
         let labelsAsis = ["Auditorio", "Teens", "Profes Teens", "Kids", "Profes Kids", "Maternas", "Profes Maternas"];
@@ -149,4 +149,5 @@
 
 </body>
 </html>
+
 
