@@ -91,10 +91,10 @@
         let total = document.getElementById('totalGeneral').value;
         
         // Crear texto
-        let texto = `*REPORTE DE ASISTENCIA*\nFecha: ${fecha}\nHora: ${hora}\n\n*ASISTENCIA (Total: ${total})*\n`;
+        let texto = `*REPORTE DEl SERVICIO*\nFecha: ${fecha}\nHora: ${hora}\n\n*ASISTENCIA (Total: ${total})*\n`;
         
         // Añadir detalles de asistencia
-        let labelsAsis = ["Auditorio", "Teens", "Profes Teens", "Kids", "Profes Kids", "Maternos", "Profes Maternos"];
+        let labelsAsis = ["Auditorio", "Teens", "Profes Teens", "Kids", "Profes Kids", "Maternas", "Profes Maternas"];
         let inputsAsis = document.querySelectorAll('.sumar');
         inputsAsis.forEach((inp, index) => {
             if(inp.value) texto += `- ${labelsAsis[index]}: ${inp.value}\n`;
@@ -149,3 +149,4 @@
 
 </body>
 </html>
+
